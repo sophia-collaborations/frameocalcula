@@ -38,12 +38,35 @@ sub eachoffiles {
   }
 };
 
+sub competra {
+  my $lc_nloc;
+  $lc_nloc = index $_[2], $_[3];
+  if ( $lc_nloc < $_[0] )
+  {
+    if ( $lc_nloc > ( 0 - 0.5 ) )
+    {
+      $_[0] = $lc_nloc;
+      $_[1] = $_[3];
+    }
+  }
+  if ( $_[0] < ( 0 - 0.5 ) )
+  {
+    $_[0] = $lc_nloc;
+    $_[1] = $_[3];
+  }
+}
 
 
 sub fetcho {
   my $lc_a;
   my $lc_b;
-  ($lc_a,$lc_b) = split(quotemeta(':'),$_[0],2);
+  my $lc_win_pos;
+  my $lc_win_chr;
+  $lc_win_pos = -1;
+  $lc_win_chr = ':';
+  &competra($lc_win_pos,$lc_win_chr,$_[0],':');
+  &competra($lc_win_pos,$lc_win_chr,$_[0],'/');
+  ($lc_a,$lc_b) = split(quotemeta($lc_win_chr),$_[0],2);
   $_[0] = $lc_b;
   return $lc_a;
 }
@@ -85,7 +108,12 @@ sub framerend {
 
 sub frameout {
   print &framerend($_[0]);
-  print ' : ';
+  print ' :';
+  if ( $_[2] ne '' )
+  {
+    print $_[2] . ':';
+  }
+  print ' ';
   print $_[1];
   print "\n";
 }
@@ -107,11 +135,11 @@ sub func__talk__do {
   $lc_cur_point = &fetcho($lc_conto);
   $lc_end_point = &fetcho($lc_conto);
   $lc_seg_remain = &fetcho($lc_conto);
-  &frameout($lc_cur_point,('Talk Segment ' . $fcount_talk_do . ': ' . $lc_conto));
+  &frameout($lc_cur_point,('Talk Segment ' . $fcount_talk_do . ': ' . $lc_conto),'a');
   if ( $lc_seg_remain < 0.5 )
   {
-    &frameout($lc_cur_point,('Start Empty Talk #' . $fcount_talk_do));
-    &frameout($lc_end_point,('End Empty Talk #' . $fcount_talk_do));
+    &frameout($lc_cur_point,('Start Empty Talk #' . $fcount_talk_do),'b');
+    &frameout($lc_end_point,('End Empty Talk #' . $fcount_talk_do),'d');
     return;
   }
   $lc_dist_remain = ( $lc_end_point - $lc_cur_point );
@@ -123,15 +151,15 @@ sub func__talk__do {
     $lc_mdist_remain = ( ( $lc_dist_remain + $lc_ndist_remain ) / 2 );
 
     $lc2_aa = ( $lc_end_point - $lc_dist_remain );
-    &frameout($lc2_aa,('CLOSED Talk Segment: ' . $fcount_talk_do . '-' . $lc_sylb_count . '-A closed'));
+    &frameout($lc2_aa,('CLOSED Talk Segment: ' . $fcount_talk_do . '-' . $lc_sylb_count . '-A closed'),'b');
     $lc2_aa = ( $lc_end_point - $lc_mdist_remain );
-    &frameout($lc2_aa,('OPEN Talk Segment: ' . $fcount_talk_do . '-' . $lc_sylb_count . '-B open'));
+    &frameout($lc2_aa,('OPEN Talk Segment: ' . $fcount_talk_do . '-' . $lc_sylb_count . '-B open'),'c');
 
     $lc_dist_remain = $lc_ndist_remain;
     $lc_seg_remain = $lc_nseg_remain;
   }
   $lc_sylb_count = int($lc_sylb_count + 1.2);
-  &frameout($lc_end_point,('CLOSED Talk Segment: ' . $fcount_talk_do . '-' . $lc_sylb_count . '-F closed'));
+  &frameout($lc_end_point,('CLOSED Talk Segment: ' . $fcount_talk_do . '-' . $lc_sylb_count . '-F closed'),'d');
 }
 
 
