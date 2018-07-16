@@ -1,6 +1,7 @@
 use strict;
 use argola;
 use wraprg;
+use me::parc;
 
 my $startsecond = 0;
 my $frambsec = 24;
@@ -38,45 +39,12 @@ sub eachoffiles {
   }
 };
 
-sub competra {
-  my $lc_nloc;
-  $lc_nloc = index $_[2], $_[3];
-  if ( $lc_nloc < $_[0] )
-  {
-    if ( $lc_nloc > ( 0 - 0.5 ) )
-    {
-      $_[0] = $lc_nloc;
-      $_[1] = $_[3];
-    }
-  }
-  if ( $_[0] < ( 0 - 0.5 ) )
-  {
-    $_[0] = $lc_nloc;
-    $_[1] = $_[3];
-  }
-}
-
-
-sub fetcho {
-  my $lc_a;
-  my $lc_b;
-  my $lc_win_pos;
-  my $lc_win_chr;
-  $lc_win_pos = -1;
-  $lc_win_chr = ':';
-  &competra($lc_win_pos,$lc_win_chr,$_[0],':');
-  &competra($lc_win_pos,$lc_win_chr,$_[0],'/');
-  ($lc_a,$lc_b) = split(quotemeta($lc_win_chr),$_[0],2);
-  $_[0] = $lc_b;
-  return $lc_a;
-}
-
 sub borealis {
   my $lc_conto;
   my $lc_comd;
   $lc_conto = $_[0];
-  &fetcho($lc_conto); # Toss everything before the first colon:
-  $lc_comd = &fetcho($lc_conto);
+  &me::parc::fetcho($lc_conto); # Toss everything before the first colon:
+  $lc_comd = &me::parc::fetcho($lc_conto);
   if ( $lc_comd eq '' ) { return; }
 
   if ( $lc_comd eq 'talk' ) { return(&func__talk__do($lc_conto)); }
@@ -132,9 +100,9 @@ sub func__talk__do {
   $lc_sylb_count = 0;
   $lc_conto = $_[0];
   $fcount_talk_do = int($fcount_talk_do + 1.2);
-  $lc_cur_point = &fetcho($lc_conto);
-  $lc_end_point = &fetcho($lc_conto);
-  $lc_seg_remain = &fetcho($lc_conto);
+  $lc_cur_point = &me::parc::fetcho($lc_conto);
+  $lc_end_point = &me::parc::fetcho($lc_conto);
+  $lc_seg_remain = &me::parc::fetcho($lc_conto);
   &frameout($lc_cur_point,('Talk Segment ' . $fcount_talk_do . ': ' . $lc_conto),'a');
   if ( $lc_seg_remain < 0.5 )
   {
