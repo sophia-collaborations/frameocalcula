@@ -90,7 +90,7 @@ sub talk_a_flower {
   my $lc_elaps;
   my $lc_atto;
 
-  print $_[0] . ' ----- ' . $_[1] . " :\n"; # DEBUG
+  #print $_[0] . ' ----- ' . $_[1] . " :\n"; # DEBUG
   $lc_diffra = ( $_[1] - $_[0] );
   foreach $lc_item (@sublayers)
   {
@@ -101,7 +101,10 @@ sub talk_a_flower {
 }
 
 sub talk_a_petal {
-  print "-- " . $_[0] . ' - ' . $_[1] . " :\n"; # DEBUG
+  #print "-- " . $_[0] . ' - ' . $_[1] . " :\n"; # DEBUG
+  print "<waypoint time=\"" . $_[0];
+  print "s\" before=\"clamped\" after=\"clamped\">\n<string>";
+  print $_[1] . "</string>\n</waypoint>\n";
 }
 
 
