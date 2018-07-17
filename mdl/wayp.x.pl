@@ -5,9 +5,18 @@ use me::parc;
 my $time_needle_main;
 my $time_needle_fram;
 my @sublayers = ( );
+my $max_set = 0;
+my $max_is;
 
 $time_needle_main = ( 0 - 1 );
 $time_needle_fram = ( 0 - 1 );
+
+sub func__max__do {
+  my $lc_rg;
+  $lc_rg = $_[0];
+  $max_set = 10;
+  $max_is = &me::parc::fetcho($lc_rg);
+} &me::parc::setfunc('max',\&func__max__do);
 
 sub func__talk__do {
   my $lc_rg;
