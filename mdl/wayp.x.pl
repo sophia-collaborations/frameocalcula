@@ -18,6 +18,52 @@ sub func__max__do {
   $max_is = &me::parc::fetcho($lc_rg);
 } &me::parc::setfunc('max',\&func__max__do);
 
+sub func__ctalk__do {
+  # The 'ctalk' function is a modified version of the 'talk'
+  # function where the new talk segment rather than having
+  # its beginning specified in the directive instead simply
+  # picks up where the previous 'talk' or 'ctalk' instance
+  # left off.
+  my $lc_rg;
+  my $lc_time_start;
+  my $lc_time_stop;
+  my $lc_sylb_remain;
+  my $lc_time_remain;
+
+  $lc_rg = $_[0];
+  $lc_time_start = $time_needle_main;
+  $lc_time_stop = &me::parc::fetcho($lc_rg);
+  $lc_sylb_remain = &me::parc::fetcho($lc_rg);
+  $lc_time_remain = ( $lc_time_stop - $lc_time_start );
+
+  # Now, without the Sonic Screwdriver, we will deal with
+  # all Time Anomilies.
+  if ( $lc_time_stop <= $lc_time_start )
+  {
+    die "\nAnd time must ALWAYS move forward.\n";
+  }
+  $time_needle_main = $lc_time_stop;
+
+
+  while ( $lc_sylb_remain > 1.5 )
+  {
+    my $lc2_neosylb;
+    my $lc2_time_rem;
+    my $lc2_time_neo;
+
+    $lc2_neosylb = int($lc_sylb_remain - 0.8);
+    $lc2_time_rem = ( $lc_time_remain * ( $lc2_neosylb / $lc_sylb_remain ) );
+    $lc2_time_neo = ( $lc_time_stop - $lc2_time_rem );
+
+    &talk_a_flower($lc_time_start,$lc2_time_neo);
+
+    $lc_time_start = $lc2_time_neo;
+    $lc_time_remain = $lc2_time_rem;
+    $lc_sylb_remain = $lc2_neosylb;
+  }
+  &talk_a_flower($lc_time_start,$lc_time_stop);
+} &me::parc::setfunc('ctalk',\&func__ctalk__do);
+
 sub func__talk__do {
   my $lc_rg;
   my $lc_time_start;
