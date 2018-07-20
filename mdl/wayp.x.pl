@@ -7,6 +7,7 @@ my $time_needle_fram;
 my @sublayers = ( );
 my $max_set = 0;
 my $max_is;
+my $yet_intag;
 
 $time_needle_main = ( 0 - 1 );
 $time_needle_fram = ( 0 - 1 );
@@ -109,6 +110,50 @@ sub func__talk__do {
   &talk_a_flower($lc_time_start,$lc_time_stop);
 } &me::parc::setfunc('talk',\&func__talk__do);
 
+# <animated type="string">
+
+sub func__olayr__do {
+  my $lc_rg;
+  my $lc_timeat;
+  my @lc_nea;
+  my @lc_neb;
+  my $lc_nec;
+
+  if ( $yet_intag > 5 )
+  {
+    die(
+      "\nCan not have more than one 'olayr' "
+    . "directive.\nPlease use a 'layer' "
+    . "directive instead.\n\n"
+    );
+  }
+  $yet_intag = 10;
+
+
+  $lc_rg = $_[0];
+  $lc_timeat = &me::parc::fetcho($lc_rg);
+  &me::parc::trim($lc_rg);
+
+  # BEGINNING THE START-OF-ANIMATION
+  print '<animated type="string">' . "\n";
+  print '<waypoint time="0s" before="clamped" after="clamped">
+<string>' . $lc_rg . '</string>
+</waypoint>' . "\n";
+  # FINISHING THE START-OF-ANIMATION
+
+  @lc_nea = ();
+  @lc_neb = ();
+  foreach $lc_nec (@sublayers)
+  {
+    if ( ($lc_nec->[0]) < $lc_timeat ) { @lc_nea = (@lc_nea,$lc_nec); }
+    if ( ($lc_nec->[0]) > $lc_timeat ) { @lc_neb = (@lc_neb,$lc_nec); }
+  }
+  $lc_nec = [$lc_timeat,$lc_rg];
+  @sublayers = (@lc_nea,$lc_nec,@lc_neb);
+
+  return;
+} &me::parc::setfunc('olayr',\&func__olayr__do);
+
 sub func__layer__do {
   my $lc_rg;
   my $lc_timeat;
@@ -171,5 +216,12 @@ sub talk_a_petal {
 &argola::runopts();
 
 &me::parc::of_all_the_files();
+
+if ( $yet_intag > 5 )
+{
+  print "</animated>\n";
+}
+
+
 
 
