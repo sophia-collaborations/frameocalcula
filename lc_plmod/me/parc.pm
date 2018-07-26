@@ -95,11 +95,32 @@ sub fetcho {
   my $lc_win_chr;
   $lc_win_pos = -1;
   $lc_win_chr = ':';
-  &competra($lc_win_pos,$lc_win_chr,$_[0],':');
+  #&competra($lc_win_pos,$lc_win_chr,$_[0],':');
   &competra($lc_win_pos,$lc_win_chr,$_[0],'/');
   ($lc_a,$lc_b) = split(quotemeta($lc_win_chr),$_[0],2);
   $_[0] = $lc_b;
   return $lc_a;
+}
+
+sub minutize {
+  # Run this function on a variable to convert it from
+  # minutes-seconds format to pure seconds format.
+  my $lc_src;
+  my @lc_seg;
+  my $lc_ret;
+  my $lc_each;
+  my $lc_intm;
+  $lc_src = $_[0];
+  @lc_seg = split(quotemeta(':'),$lc_src);
+  $lc_ret = 0;
+
+  foreach $lc_each (@lc_seg)
+  {
+    $lc_intm = int(($lc_ret * 60) + 0.2);
+    $lc_ret = $lc_intm + $lc_each;
+  }
+
+  $_[0] = $lc_ret;
 }
 
 1;

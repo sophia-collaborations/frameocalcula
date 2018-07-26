@@ -17,6 +17,7 @@ sub func__max__do {
   $lc_rg = $_[0];
   $max_set = 10;
   $max_is = &me::parc::fetcho($lc_rg);
+  &me::parc::minutize($max_is);
 } &me::parc::setfunc('max',\&func__max__do);
 
 sub func__ctalk__do {
@@ -34,6 +35,7 @@ sub func__ctalk__do {
   $lc_rg = $_[0];
   $lc_time_start = $time_needle_main;
   $lc_time_stop = &me::parc::fetcho($lc_rg);
+  &me::parc::minutize($lc_time_stop);
   $lc_sylb_remain = &me::parc::fetcho($lc_rg);
   $lc_time_remain = ( $lc_time_stop - $lc_time_start );
 
@@ -75,6 +77,8 @@ sub func__talk__do {
   $lc_rg = $_[0];
   $lc_time_start = &me::parc::fetcho($lc_rg);
   $lc_time_stop = &me::parc::fetcho($lc_rg);
+  &me::parc::minutize($lc_time_start);
+  &me::parc::minutize($lc_time_stop);
   $lc_sylb_remain = &me::parc::fetcho($lc_rg);
   $lc_time_remain = ( $lc_time_stop - $lc_time_start );
 
