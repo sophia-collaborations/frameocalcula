@@ -8,9 +8,45 @@ my @sublayers = ( );
 my $max_set = 0;
 my $max_is;
 my $yet_intag;
+my $fram_per_sec = 24;
+
+#my $last_key_nom = '0f';
+my $last_key_nom = 'bamboozle';
 
 $time_needle_main = ( 0 - 1 );
 $time_needle_fram = ( 0 - 1 );
+
+sub zen_func {
+  # A convenient place-holder for functions that must be
+  # ignored in the present mode.
+}
+
+sub func__kfram__do {
+  my $lc_rg;
+  my $lc_org;
+  my $lc_raw_key;
+  my $lc_time_we_have;
+  $lc_rg = $_[0]; $lc_org = $lc_rg;
+  $lc_raw_key = &me::parc::fetcho($lc_rg);
+  &me::parc::minutize($lc_raw_key);
+  if ( $lc_raw_key <= $time_needle_main )
+  {
+    die("\n\n/kfram/" . $lc_org . "\n    Time must always move forward.\n\n");
+  }
+  $time_needle_main = $lc_raw_key;
+  $lc_time_we_have = &frameloc($lc_raw_key);
+  if ( $lc_time_we_have eq $last_key_nom )
+  {
+    die("\n\n/kfram/" . $lc_org . "\n    Please comment-out - keyframe same.\n\n");
+  }
+  $last_key_nom = $lc_time_we_have;
+
+  print '<keyframe time="';
+  print $lc_time_we_have;
+  print '" active="true"/>';
+  print "\n";
+  
+} &me::parc::setfunc('kfram',\&zen_func);
 
 sub func__max__do {
   my $lc_rg;
@@ -187,6 +223,37 @@ sub func__layer__do {
 # #############################################
 
 
+sub frameloc {
+  my $lc_src;
+  my $lc_ext;
+  my $lc_sec;
+  my $lc_mon;
+  my $lc_ret;
+
+  $lc_ret = '';
+  $lc_src = $_[0];
+  $lc_sec = int($lc_src);
+  $lc_ext = ( $lc_src - $lc_sec );
+
+  $lc_mon = 0;
+  while ( $lc_sec > 59.5 )
+  {
+    $lc_mon = int($lc_mon + 1.2);
+    $lc_sec = int($lc_sec - 59.8);
+  }
+  if ( $lc_mon > 0.5 ) { $lc_ret .= ( $lc_mon . 'm ' ); }
+
+  if ( $lc_sec > 0.5 ) { $lc_ret .= ( $lc_sec . 's ' ); }
+
+  $lc_mon = int(($lc_ext * $fram_per_sec) + 0.5);
+  if ( $lc_mon > 0.5 ) { $lc_ret .= ( $lc_mon . 'f ' ); }
+
+  chop($lc_ret);
+  if ( $lc_ret eq '' ) { $lc_ret = '0s'; }
+  return $lc_ret;
+}
+
+
 
 sub talk_a_flower {
   my $lc_diffra;
@@ -214,8 +281,22 @@ sub talk_a_petal {
 
 # #############################################
 
+sub opto__kfm__do {
+  # The following functions will be activated in this mode:
+  &me::parc::setfunc('kfram',\&func__kfram__do);
+
+  # The following functions will be deactivated in this mode:
+  &me::parc::setfunc('layer',\&zen_func);
+  &me::parc::setfunc('olayr',\&zen_func);
+  &me::parc::setfunc('talk',\&zen_func);
+  &me::parc::setfunc('ctalk',\&zen_func);
+}
+
+# #############################################
+
 
 &me::parc::universalopts();
+&argola::setopt('-kfm',\&opto__kfm__do);
 
 &argola::runopts();
 
