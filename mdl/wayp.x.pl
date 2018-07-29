@@ -9,6 +9,7 @@ my $max_set = 0;
 my $max_is;
 my $yet_intag;
 my $fram_per_sec = 24;
+my $final_note = '';
 
 #my $last_key_nom = '0f';
 my $last_key_nom = 'bamboozle';
@@ -21,6 +22,10 @@ sub zen_func {
   # ignored in the present mode.
 }
 
+sub func__n__do {
+  $final_note = "\n\n##" . $_[0];
+} &me::parc::setfunc('n',\&func__n__do);
+
 sub func__kfram__do {
   my $lc_rg;
   my $lc_org;
@@ -31,13 +36,13 @@ sub func__kfram__do {
   &me::parc::minutize($lc_raw_key);
   if ( $lc_raw_key <= $time_needle_main )
   {
-    die("\n\n/kfram/" . $lc_org . "\n    Time must always move forward.\n\n");
+    die( $final_note . "\n\n/kfram/" . $lc_org . "\n    Time must always move forward.\n\n");
   }
   $time_needle_main = $lc_raw_key;
   $lc_time_we_have = &frameloc($lc_raw_key);
   if ( $lc_time_we_have eq $last_key_nom )
   {
-    die("\n\n/kfram/" . $lc_org . "\n    Please comment-out - keyframe same.\n\n");
+    die( $final_note . "\n\n/kfram/" . $lc_org . "\n    Please comment-out - keyframe same.\n\n");
   }
   $last_key_nom = $lc_time_we_have;
 
@@ -79,7 +84,7 @@ sub func__ctalk__do {
   # all Time Anomilies.
   if ( $lc_time_stop <= $lc_time_start )
   {
-    die "\nAnd time must ALWAYS move forward.\n";
+    die("\nAnd time must ALWAYS move forward.\n");
   }
   $time_needle_main = $lc_time_stop;
 
@@ -105,12 +110,13 @@ sub func__ctalk__do {
 
 sub func__talk__do {
   my $lc_rg;
+  my $lc_origin;
   my $lc_time_start;
   my $lc_time_stop;
   my $lc_sylb_remain;
   my $lc_time_remain;
 
-  $lc_rg = $_[0];
+  $lc_rg = $_[0]; $lc_origin = $lc_rg;
   $lc_time_start = &me::parc::fetcho($lc_rg);
   $lc_time_stop = &me::parc::fetcho($lc_rg);
   &me::parc::minutize($lc_time_start);
@@ -122,11 +128,11 @@ sub func__talk__do {
   # all Time Anomilies.
   if ( $lc_time_start < $time_needle_main )
   {
-    die "\nTime may only move forward, not backward.\n\n";
+    die("\n/talk/" . $lc_origin . "\n\nTime may only move forward, not backward.\n\n");
   }
   if ( $lc_time_stop <= $lc_time_start )
   {
-    die "\nAnd time must ALWAYS move forward.\n";
+    die("\n/talk/" . $lc_origin . "\n\nAnd time must ALWAYS move forward.\n");
   }
   $time_needle_main = $lc_time_stop;
 
