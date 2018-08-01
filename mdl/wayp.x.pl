@@ -1,6 +1,7 @@
 use strict;
 use argola;
 use me::parc;
+use Scalar::Util qw(looks_like_number);
 
 my $time_needle_main;
 my $time_needle_fram;
@@ -72,8 +73,9 @@ sub func__ctalk__do {
   my $lc_time_stop;
   my $lc_sylb_remain;
   my $lc_time_remain;
+  my $lc_origin;
 
-  $lc_rg = $_[0];
+  $lc_rg = $_[0]; $lc_origin = $lc_rg;
   $lc_time_start = $time_needle_main;
   $lc_time_stop = &me::parc::fetcho($lc_rg);
   &me::parc::minutize($lc_time_stop);
@@ -84,7 +86,11 @@ sub func__ctalk__do {
   # all Time Anomilies.
   if ( $lc_time_stop <= $lc_time_start )
   {
-    die("\nAnd time must ALWAYS move forward.\n");
+    die("\n/ctalk/" . $lc_origin . "\n\nAnd time must ALWAYS move forward.\n");
+  }
+  if ( ! ( looks_like_number($lc_sylb_remain) ) )
+  {
+    die("\n/ctalk/" . $lc_origin . "\n\nIt seems like you forgot to specify the number of sylables.\n\n");
   }
   $time_needle_main = $lc_time_stop;
 
@@ -133,6 +139,10 @@ sub func__talk__do {
   if ( $lc_time_stop <= $lc_time_start )
   {
     die("\n/talk/" . $lc_origin . "\n\nAnd time must ALWAYS move forward.\n");
+  }
+  if ( ! ( looks_like_number($lc_sylb_remain) ) )
+  {
+    die("\n/talk/" . $lc_origin . "\n\nIt seems like you forgot to specify the number of sylables.\n\n");
   }
   $time_needle_main = $lc_time_stop;
 
